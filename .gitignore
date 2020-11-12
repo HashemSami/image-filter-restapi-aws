@@ -22,7 +22,6 @@ coverage/
 www/
 node_modules/
 tmp/
-temp/
 platforms/
 plugins/
 plugins/android.json

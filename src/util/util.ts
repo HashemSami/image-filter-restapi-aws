@@ -4,12 +4,12 @@ import Jimp from "jimp";
 import Path from "path";
 
 export async function downloadImage(inputURL: string): Promise<string> {
-  const path = Path.resolve(__dirname, "files", "imageToBeFiltered.jpg");
+  const path = Path.resolve(__dirname, "temp", "imageToBeFiltered.jpg");
 
   const response = await Axios({
     method: "GET",
     url: inputURL,
-    responseType: "stream",
+    responseType: "stream"
   });
 
   response.data.pipe(fs.createWriteStream(path));
@@ -32,17 +32,17 @@ export async function downloadImage(inputURL: string): Promise<string> {
 // RETURNS
 //    an absolute path to a filtered image locally saved file
 export async function filterImageFromURL(inputURL: string): Promise<string> {
-  return new Promise(async (resolve) => {
+  return new Promise(async resolve => {
     const photo = await Jimp.read(inputURL);
 
     const fileName = "filtered." + Math.floor(Math.random() * 2000) + ".jpg";
-    const outpath = Path.resolve(__dirname, "tmp", fileName);
+    const outpath = Path.resolve(__dirname, "temp", fileName);
 
     await photo
       .resize(256, 256) // resize
       .quality(60) // set JPEG quality
       .greyscale() // set greyscale
-      .write(outpath, (img) => {
+      .write(outpath, img => {
         resolve(outpath);
       });
   });

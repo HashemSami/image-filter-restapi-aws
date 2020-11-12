@@ -2,11 +2,7 @@ import express from "express";
 import { Request, Response } from "express";
 
 import bodyParser from "body-parser";
-import {
-  filterImageFromURL,
-  deleteLocalFiles,
-  downloadImage,
-} from "./util/util";
+import { filterImageFromURL, deleteLocalFiles, downloadImage } from "./util/util";
 
 (async () => {
   // Init the Express application
@@ -33,24 +29,21 @@ import {
   app.get("/filteredimage", async (req: Request, res: Response) => {
     try {
       let image_url = req.query.image_url;
-      // console.log(image_url);
+
       if (!image_url) {
-        return res
-          .status(400)
-          .send({ message: "URL error, please provide an image URL" });
+        return res.status(400).send({ message: "URL error, please provide an image URL" });
       }
 
       const imgPath = await downloadImage(image_url);
       const filteredpath = await filterImageFromURL(imgPath);
+
       res.status(201).sendFile(filteredpath);
       res.on("finish", function () {
         deleteLocalFiles([imgPath, filteredpath]);
       });
     } catch (e) {
       if (e.response.status === 404) {
-        return res
-          .status(404)
-          .send({ message: "URL error, please provide the correct image URL" });
+        return res.status(404).send({ message: "URL error, please provide the correct image URL" });
       }
       console.log(e.message);
     }
